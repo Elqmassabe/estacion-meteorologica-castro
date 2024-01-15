@@ -62,11 +62,13 @@ void loop()
  */
 
 
+
 #include <Arduino.h>
 //#include <Wifi.h> 
 #include <HTTPClient.h>      // no es necesario introducirla solo llamarla
 #include <WiFiClient.h>
 #include <Adafruit_BMP280.h>
+#include <DFRobot_SHT20.h>
 
 
 Adafruit_BMP280 bmp; // I2C
@@ -85,7 +87,11 @@ void envioDatos();
 
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
+  sht20.initSHT20();
+  delay(100);
+  Serial.println("Sensor init finish!");
+  sht20.checkSHT20();
   Serial.println(F("BMP280 Forced Mode Test."));
 
   if (!bmp.begin()) {
@@ -123,11 +129,14 @@ void loop() {
 
 // aquí van las funciones
 void lecturaBMP280(){
+    float humd = sht20.readHumidity();
+
+    Serial.print(" Humidity:");
+    Serial.print(humd, 1);  
+    Serial.print("%");
+    Serial.println();
   if (bmp.takeForcedMeasurement()) {      // must call this to wake sensor up and get new measurement data it blocks until measurement is complete
     // can now print out the new measurements
-    Serial.print(F("Temperature = "));
-    Serial.print(bmp.readTemperature());
-    Serial.println(" *C");
 
     Serial.print(F("Pressure = "));
     Serial.print(bmp.readPressure());
