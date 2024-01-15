@@ -1,18 +1,25 @@
 #include <Arduino.h>
+#include "DFRobot_SHT20.h"
 
-// put function declarations here:
-int myFunction(int, int);
+DFRobot_SHT20 sht20(&Wire, SHT20_I2C_ADDR);
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+void setup()
+{
+  Serial.begin(115200);
+  sht20.initSHT20();
+  delay(100);
+  Serial.println("Sensor init finish!");
+  sht20.checkSHT20();
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
+void loop()
+{
+  float humd = sht20.readHumidity();
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+  Serial.print(" Humidity:");
+  Serial.print(humd, 1);  
+  Serial.print("%");
+  Serial.println();
+
+  delay(1000);
 }
